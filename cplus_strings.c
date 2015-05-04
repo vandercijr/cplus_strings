@@ -75,14 +75,14 @@ char **split(char *s, char c)
 */
 void main() {
 	char *msg;
-	char **token;
+	char **arr;
 
 	msg = "DEVICE 0|W|abcdefghijkl|FFF321";
 
-	token = split(msg, '|');
+	arr = split(msg, '|');
 
-	printf("token %s\n", token[0]);
-	printf("token %s\n", token[1]);
-	printf("token %s\n", token[2]);
-	printf("token %s\n", token[3]);
+	printf("token %s\n", arr[0]);
+	printf("token %s\n", arr[1]);
+	printf("token %s\n", arr[2]);
+	printf("token %s\n", arr[3]);
 };
