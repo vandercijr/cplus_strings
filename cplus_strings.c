@@ -1,5 +1,6 @@
 #include <stdio>
 #include <string>
+#include <stdlib>
 
 /*
 * char *substr(char *s, int start, int length)
@@ -12,9 +13,11 @@ char *substr(char *s, int start, int length)
 	char *_substr;
 
 	//aloca memoria para a substring
-	_substr = (char *) malloc(length * sizeof(char));
+	_substr = (char *) malloc((length+1) * sizeof(char));
+
 	//copia a substring para a variavel
 	strncpy(_substr, s+start, length * sizeof(char));
+
 	//finaliza a string com o caracter nulo
 	_substr[length] = '\0';
 
@@ -27,45 +30,54 @@ char *substr(char *s, int start, int length)
 * retorna um array char
 *
 */
-char **split(char *s, char *c)
+char **split(char *s, char *delimiter)
 {
-	char **token;
+	char **token_array;
 	char *current;
 	char *previous = NULL;
 	char *_substr;
 	int length;
 	int length_substr;
-	int num_char_found = 0;
+	int delimiters_found = 0;
 	int offset = 0;
+	int tokens;
 
-	length = (int) strlen(s);
+	length = (int)strlen(s);
+
 	//conta as ocorrencias de caracteres separadores
 	do
 	{
-		current = strstr(s+offset, c);
+		current = strstr(s+offset, delimiter);
 		if (current != NULL)
 		{
-			offset = current - s + 1;
-			num_char_found++;
+			offset = (current - s) + 1;
+			delimiters_found++;
 		}
+
 	} while(current != NULL);
 
+	tokens = delimiters_found+1;
 	//aloca memoria para a o array de tokens (substrings)
-	token = (char **)malloc((num_char_found+1) * sizeof(char));
+	token_array = (char **)malloc(tokens * sizeof(char *));
+
 	offset = 0;
 
-	for (int i = 0; i < num_char_found+1; ++i)
+	for (int i = 0; i < tokens; ++i)
 	{
 		//aponta para o caracter encontrado
-		current = strstr(s+offset, c);
+		current = strstr(s+offset, delimiter);
+
 		//calcula o tamanho da string que está entre os caracteres de separação
 		length_substr = (current != NULL) ? current - ((previous != NULL) ? previous+1 : s) : s+length - previous-1;
-		token[i] = substr(s, offset, length_substr);
+
+		token_array[i] = substr(s, offset, length_substr);
+
 		offset = (current != NULL) ? current - s + 1: 0;
+
 		previous = current;
 	}
-	
-	return token;
+
+	return token_array;
 }
 
 /*
@@ -77,7 +89,7 @@ void main() {
 	char *msg;
 	char **arr;
 
-	msg = "DEVICE 0|W|abcdefghijkl|FFF321";
+	msg = "DEVICE 0|W|abcdefghijklmnh|FFF321";
 
 	arr = split(msg, "|");
 
