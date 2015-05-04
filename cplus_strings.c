@@ -27,7 +27,7 @@ char *substr(char *s, int start, int length)
 * retorna um array char
 *
 */
-char **split(char *s, char c)
+char **split(char *s, char *c)
 {
 	char **token;
 	char *current;
@@ -42,26 +42,26 @@ char **split(char *s, char c)
 	//conta as ocorrencias de caracteres separadores
 	do
 	{
-		current = strstr(s+offset, &c);
+		current = strstr(s+offset, c);
 		if (current != NULL)
 		{
-			offset = (int)current - (int)s + 1;
+			offset = current - s + 1;
 			num_char_found++;
 		}
 	} while(current != NULL);
 
 	//aloca memoria para a o array de tokens (substrings)
-	token = (char **) malloc((num_char_found+1) * sizeof(char));
+	token = (char **)malloc((num_char_found+1) * sizeof(char));
 	offset = 0;
 
 	for (int i = 0; i < num_char_found+1; ++i)
 	{
 		//aponta para o caracter encontrado
-		current = strstr(s+offset, &c);
+		current = strstr(s+offset, c);
 		//calcula o tamanho da string que está entre os caracteres de separação
-		length_substr = (current != NULL) ? (int)current - ((previous != NULL) ? (int)previous+1 : (int)s) : (int)s+length - (int)previous-1;
+		length_substr = (current != NULL) ? current - ((previous != NULL) ? previous+1 : s) : s+length - previous-1;
 		token[i] = substr(s, offset, length_substr);
-		offset = (current != NULL) ? (int)current - (int)s + 1: 0;
+		offset = (current != NULL) ? current - s + 1: 0;
 		previous = current;
 	}
 	
@@ -79,7 +79,7 @@ void main() {
 
 	msg = "DEVICE 0|W|abcdefghijkl|FFF321";
 
-	arr = split(msg, '|');
+	arr = split(msg, "|");
 
 	printf("token %s\n", arr[0]);
 	printf("token %s\n", arr[1]);
